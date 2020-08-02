@@ -64,7 +64,13 @@ func main() {
 	color.HiRed("Started at " + time.Now().String())
 	// FILL API
 	cwd, _ = os.Getwd()
-	confPath = path.Join(cwd, config)
+	arg1 := os.Args[1]
+	if len(arg1) != 0 {
+		confPath = arg1
+	} else {
+		confPath = path.Join(cwd, config)
+	}
+
 	if _, err := os.Stat(confPath); err == nil {
 		fd, _ := ioutil.ReadFile(confPath)
 		err := json.Unmarshal(fd, &conf)
