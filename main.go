@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"flag"
 	"net"
 	"net/http"
 	"strings"
@@ -16,11 +17,12 @@ import (
 )
 
 const (
-	config = "conf.json"
-	getIP  = "http://ip.03k.org/"
-	fatal  = 0
-	normal = 1
-	warn   = 2
+	current = "./"
+	config  = "conf.json"
+	getIP   = "http://ip.03k.org/"
+	fatal   = 0
+	normal  = 1
+	warn    = 2
 )
 
 type API struct {
@@ -41,18 +43,18 @@ func dealE(err error, mode int) {
 	if err != nil {
 		switch mode {
 		case fatal:
-			color.HiRed("Fatal Error:", err)
+			color.HiRed("Fatal Error: " + err.Error())
 			os.Exit(1)
 		case normal:
-			color.HiRed("Error:", err)
+			color.HiRed("Error: " + err.Error())
 		case warn:
-			color.HiYellow("Warn:", err)
+			color.HiYellow("Warn: " + err.Error())
 		}
 	}
 }
 
 func ask(qua string) string {
-	color.Cyan("Please Enter", qua, ":")
+	color.Cyan("Please Enter " + qua + ":")
 	reader := bufio.NewReader(os.Stdin)
 	rp, err := reader.ReadString('\n')
 	dealE(err, fatal)
@@ -60,13 +62,14 @@ func ask(qua string) string {
 }
 
 func main() {
+	fcP := flag.String("conf", current, "Config file path.")
+	flag.Parse()
 	start := time.Now()
 	color.HiRed("Started at " + time.Now().String())
 	// FILL API
 	cwd, _ = os.Getwd()
-	arg1 := os.Args[1]
-	if len(arg1) != 0 {
-		confPath = arg1
+	if *fcP != current {
+		confPath = *fcP
 	} else {
 		confPath = path.Join(cwd, config)
 	}
