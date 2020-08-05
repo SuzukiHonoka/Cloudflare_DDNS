@@ -116,34 +116,31 @@ func main() {
 		os.Exit(1)
 	}
 	color.Yellow("GET OUTGOING IP SUCCEED.")
-	// create a api instance
-	api, err := cloudflare.New(conf.Key, conf.Email)
-	dealE(err, fatal)
-	color.Green("GET API INSTANCE SUCCEED!!")
-	// get domain zoneid
-	id, err := api.ZoneIDByName(conf.Domain)
-	dealE(err, fatal)
-	color.Green("Get ZONEID SUCCEED!!")
-	// get target rid
-	rlist, _ := api.DNSRecords(id, cloudflare.DNSRecord{})
-	var rid string
-	var cIP string
-	for _, el := range rlist {
-		if el.Name == fullName {
-			rid = el.ID
-			cIP = el.Content
-			color.Magenta("GET RID SUCCEED!")
-			break
+	//Check if needed to update
+	if first.String() != ogIP {
+		color.HiYellow("CURRENT DNS RECORD DOES NOT MATCH THE OUTGOING IP: " + first.String())
+		// create a api instance
+		api, err := cloudflare.New(conf.Key, conf.Email)
+		dealE(err, fatal)
+		color.Green("GET API INSTANCE SUCCEED!!")
+		// get domain zoneid
+		id, err := api.ZoneIDByName(conf.Domain)
+		dealE(err, fatal)
+		color.Green("Get ZONEID SUCCEED!!")
+		// get target rid
+		rlist, _ := api.DNSRecords(id, cloudflare.DNSRecord{})
+		var rid string
+		for _, el := range rlist {
+			if el.Name == fullName {
+				rid = el.ID
+				color.Magenta("GET RID SUCCEED!")
+				break
+			}
 		}
-	}
-	if len(rid) == 0 {
-		// Create record TODO
-	}
-
-	if cIP != ogIP {
-		color.HiYellow("CURRENT DNS RECORD DOES NOT MATCH THE OUTGOING IP: " + cIP)
-		err := api.UpdateDNSRecord(id, rid, cloudflare.DNSRecord{Content: ogIP})
-		if err == nil {
+		if len(rid) == 0 {
+			// Create record TODO
+		}
+		if err := api.UpdateDNSRecord(id, rid, cloudflare.DNSRecord{Content: ogIP}); err == nil {
 			color.Green("UPDATE SUCCEED!")
 		} else {
 			dealE(err, fatal)
