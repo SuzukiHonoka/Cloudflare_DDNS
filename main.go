@@ -149,5 +149,5 @@ func main() {
 	} else {
 		color.HiWhite("CURRENT DNS RECORD MATCH THE OUTGOING IP: " + ogIP)
 	}
-	color.HiRed("PROCESS ENDED. TOTAL COST: " + time.Now().Sub(start).String() + "ms")
+	color.HiRed("PROCESS ENDED. TOTAL COST: " + time.Now().Sub(start).String())
 }
