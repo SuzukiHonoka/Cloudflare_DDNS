@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+var DefaultTimeout = 3 * time.Second
+
 type DNS string
 
 func (s DNS) SetDefault() {
@@ -16,7 +18,7 @@ func (s DNS) SetDefault() {
 		PreferGo: true,
 		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
 			d := &net.Dialer{
-				Timeout: 3 * time.Second,
+				Timeout: DefaultTimeout,
 			}
 			return d.DialContext(ctx, network, net.JoinHostPort(string(s), "53"))
 		},

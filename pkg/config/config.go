@@ -3,16 +3,16 @@ package config
 import (
 	"cf_ddns/internal/api"
 	"cf_ddns/internal/dns"
-	"cf_ddns/internal/proxy"
+	"cf_ddns/internal/wrapper"
 	"encoding/json"
 	"os"
 )
 
 type Config struct {
-	API    *api.API           `json:"api"`
-	DNS    dns.DNS            `json:"dns,omitempty"`
-	Target *proxy.Target      `json:"target"`
-	Creds  *proxy.Credentials `json:"credentials"`
+	API        *api.API            `json:"api"`
+	DNS        dns.DNS             `json:"dns,omitempty"`
+	Target     *wrapper.Target     `json:"target"`
+	Credential *wrapper.Credential `json:"credentials"`
 }
 
 func LoadConfig(path string) (*Config, error) {

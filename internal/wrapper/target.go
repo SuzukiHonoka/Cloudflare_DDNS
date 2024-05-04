@@ -1,4 +1,4 @@
-package proxy
+package wrapper
 
 import "fmt"
 
@@ -7,6 +7,6 @@ type Target struct {
 	SubName string `json:"sub"`
 }
 
-func (t *Target) Name() string {
+func (t *Target) String() string {
 	return fmt.Sprintf("%s.%s", t.SubName, t.Domain)
 }
